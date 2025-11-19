@@ -11,10 +11,10 @@ Model name is converted to lowercase for the collection name:
 - BlogPost -> "blogs" collection
 """
 
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field, HttpUrl
+from typing import Optional, List
 
-# Example schemas (replace with your own):
+# Arabic-fashion focused schemas
 
 class User(BaseModel):
     """
@@ -29,20 +29,18 @@ class User(BaseModel):
 
 class Product(BaseModel):
     """
-    Products collection schema
-    Collection name: "product" (lowercase of class name)
+    Products collection schema for Arabic dress storefront
+    Collection name: "product"
     """
-    title: str = Field(..., description="Product title")
-    description: Optional[str] = Field(None, description="Product description")
-    price: float = Field(..., ge=0, description="Price in dollars")
-    category: str = Field(..., description="Product category")
+    title_ar: str = Field(..., description="Arabic product title")
+    description_ar: Optional[str] = Field(None, description="Arabic description")
+    price: float = Field(..., ge=0, description="Current price (SAR)")
+    original_price: Optional[float] = Field(None, ge=0, description="Original price before discount (SAR)")
+    discount_percent: Optional[int] = Field(None, ge=0, le=100, description="Discount in percent e.g. 30")
+    category: Optional[str] = Field("فساتين", description="Category name in Arabic")
     in_stock: bool = Field(True, description="Whether product is in stock")
+    sizes: List[str] = Field(default_factory=lambda: ["S", "M", "L", "XL"], description="Available sizes")
+    images: List[str] = Field(default_factory=list, description="Image URLs")
+    sku: Optional[str] = Field(None, description="Model number / SKU")
 
-# Add your own schemas here:
-# --------------------------------------------------
-
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+# Add other collections later as needed (wishlist, orders, etc.)
